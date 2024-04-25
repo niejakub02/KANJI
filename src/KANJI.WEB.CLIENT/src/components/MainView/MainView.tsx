@@ -9,23 +9,23 @@ export const MainView: FC<any> = () => {
   const [connection, setConnection] = useState<HubConnection>();
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (firstRender.current) {
-      const connection = new HubConnectionBuilder()
-        .withUrl('https://localhost:7012/community')
-        .build();
+  // useEffect(() => {
+  //   if (firstRender.current) {
+  //     const connection = new HubConnectionBuilder()
+  //       .withUrl('https://localhost:7012/community')
+  //       .build();
 
-      connection.on('msg', ({ eventName, ...rest }) => {
-        console.warn(`New message on "${eventName}"`);
-        console.log(rest);
-      });
+  //     connection.on('msg', ({ eventName, ...rest }) => {
+  //       console.warn(`New message on "${eventName}"`);
+  //       console.log(rest);
+  //     });
 
-      connection.start().then(() => setIsConnected(true));
-      setConnection(connection);
-    }
+  //     connection.start().then(() => setIsConnected(true));
+  //     setConnection(connection);
+  //   }
 
-    firstRender.current = false;
-  }, []);
+  //   firstRender.current = false;
+  // }, []);
 
   const onClick = () => {
     if (!ref.current) return null;
@@ -65,11 +65,27 @@ export const MainView: FC<any> = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
       body: JSON.stringify({
         content: grayscaleArray,
       }),
     }).then((res: any) => res.json().then((data: any) => console.log(data)));
+  };
+
+  const onRefresh = () => {
+    fetch('https://localhost:7012/auth/refresh', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
+      body: JSON.stringify({
+        refreshToken: localStorage.getItem('refresh_token'),
+      }),
+    }).then((res: any) =>
+      res.text().then((data: any) => localStorage.setItem('access_token', data))
+    );
   };
 
   return (
@@ -90,6 +106,7 @@ export const MainView: FC<any> = () => {
       )}
       <Canvas ref={ref} />
       <button onClick={onClick}>Predict</button>
+      <button onClick={onRefresh}>Refresh Token</button>
     </div>
   );
 };

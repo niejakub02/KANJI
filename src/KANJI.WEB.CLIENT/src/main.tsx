@@ -1,10 +1,10 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
-import { MainView } from '@components/MainView';
 import './main.scss';
+import { Router } from './Router';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MainView />
+    <Router />
   </StrictMode>
 );

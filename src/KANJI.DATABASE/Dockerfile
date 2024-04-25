@@ -1,0 +1,6 @@
+FROM postgres:13
+
+ENV POSTGRES_USER "kanji_enjoyer"
+ENV POSTGRES_PASSWORD "i_luv_kanji_123"
+ENV POSTGRES_DB "kanji"
+ENV POSTGRES_INITDB_ARGS "-A md5"

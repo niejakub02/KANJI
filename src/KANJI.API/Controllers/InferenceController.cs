@@ -1,5 +1,6 @@
 using KANJI.Models;
 using KANJI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.ML.OnnxRuntime;
@@ -28,6 +29,7 @@ namespace KANJI.Controllers
             inference = _inference;
         }
 
+        [Authorize]
         [HttpPost("predict")]
         public List<Prediction> Predict(Image img)
         {
