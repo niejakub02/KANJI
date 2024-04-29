@@ -1,8 +1,10 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
+# there seems to be some problem wtih ONNX runtime
+# and alpine distro
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["./KANJI.csproj", "KANJI.SERVICE/"]
 RUN dotnet restore "KANJI.SERVICE/KANJI.csproj"
