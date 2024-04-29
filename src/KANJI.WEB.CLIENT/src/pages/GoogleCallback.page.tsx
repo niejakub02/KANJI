@@ -6,7 +6,7 @@ export const GoogleCallbackPage: FC<unknown> = () => {
     if (isFirstRender.current) {
       const code = new URLSearchParams(window.location.search).get('code');
       console.log(code);
-      fetch('https://localhost:7012/auth/google', {
+      fetch('http://localhost:5059/auth/google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

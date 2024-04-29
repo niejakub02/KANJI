@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'Virgil';
+  src: url('Virgil.woff2');
+}
+
+* {
+  font-family: 'Virgil', Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+}
 body,
 html {
   margin: 0;
@@ -13,5 +22,10 @@ html {
     height: 100%;
     width: 100%;
     background-color: gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }

@@ -26,8 +26,6 @@ namespace KANJI.Services
             var values = new Dictionary<string, string>
             {
                 { "code", payload.code },
-                { "client_id", "" },
-                { "client_secret", "" },
                 { "redirect_uri", "http://localhost:3000/auth/google/callback" },
                 { "grant_type", "authorization_code" },
             };

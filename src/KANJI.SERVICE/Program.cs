@@ -2,8 +2,11 @@ using KANJI.Data;
 using KANJI.Hubs;
 using KANJI.Services;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Net.Http;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,11 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(
-    db => db.UseNpgsql("Server=127.0.0.1;Database=kanji;Port=5432;User Id=kanji_enjoyer;Password=i_luv_kanji_123")
+    db => db.UseNpgsql(builder.Configuration["ConnectionStrings:Database"])
     );
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IInferenceService, InferenceService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddCors(options =>
@@ -31,11 +35,11 @@ builder.Services.AddCors(options =>
         });
 });
 builder.Services.AddAuthentication()
-    .AddJwtBearer(cfg =>
+    .AddJwtBearer(options =>
      {
-         cfg.RequireHttpsMetadata = false;
-         cfg.SaveToken = true;
-         cfg.TokenValidationParameters = new TokenValidationParameters()
+         options.RequireHttpsMetadata = false;
+         options.SaveToken = true;
+         options.TokenValidationParameters = new TokenValidationParameters()
          {
              ValidateIssuerSigningKey = true,
              IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokensSecrets:Access"])),
@@ -43,7 +47,26 @@ builder.Services.AddAuthentication()
              ValidateAudience = false,
              ClockSkew = TimeSpan.Zero,
          };
+         options.Events = new JwtBearerEvents
+         {
+             OnMessageReceived = context =>
+             {
+                 var accessToken = context.Request.Query["access_token"];
+
+                 Console.WriteLine(accessToken);
+                 // If the request is for our hub...
+                 var path = context.HttpContext.Request.Path;
+                 if (!string.IsNullOrEmpty(accessToken) &&
+                     (path.StartsWithSegments("/community")))
+                 {
+                     // Read the token out of the query string
+                     context.Token = accessToken;
+                 }
+                 return Task.CompletedTask;
+             }
+         };
      });
+
 
 var app = builder.Build();
 
@@ -55,13 +78,22 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
-app.UseHttpsRedirection();
+// take care of https later on
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-//app.MapHub<CommunityHub>("/community");
+app.MapHub<CommunityHub>("/community", options =>
+{
+    options.CloseOnAuthenticationExpiration = true;
+});
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    db.Database.Migrate();
+}
 
 app.Run();

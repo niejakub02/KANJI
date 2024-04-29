@@ -2,6 +2,7 @@ import { Canvas } from '@components/Canvas';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { FC, useEffect, useRef, useState } from 'react';
 import './MainView.scss';
+import { Link } from 'react-router-dom';
 
 export const MainView: FC<any> = () => {
   const firstRender = useRef<boolean>(true);
@@ -9,23 +10,30 @@ export const MainView: FC<any> = () => {
   const [connection, setConnection] = useState<HubConnection>();
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   if (firstRender.current) {
-  //     const connection = new HubConnectionBuilder()
-  //       .withUrl('https://localhost:7012/community')
-  //       .build();
+  useEffect(() => {
+    if (firstRender.current) {
+      buildConnection();
+    }
 
-  //     connection.on('msg', ({ eventName, ...rest }) => {
-  //       console.warn(`New message on "${eventName}"`);
-  //       console.log(rest);
-  //     });
+    firstRender.current = false;
+  }, []);
 
-  //     connection.start().then(() => setIsConnected(true));
-  //     setConnection(connection);
-  //   }
+  const buildConnection = () => {
+    const connection = new HubConnectionBuilder()
+      // .withAutomaticReconnect()
+      .withUrl('http://localhost:5059/community', {
+        accessTokenFactory: () => localStorage.getItem('access_token') ?? '',
+      })
+      .build();
 
-  //   firstRender.current = false;
-  // }, []);
+    connection.on('msg', ({ eventName, ...rest }) => {
+      console.warn(`New message on "${eventName}"`);
+      console.log(rest);
+    });
+
+    connection.start().then(() => setIsConnected(true));
+    setConnection(connection);
+  };
 
   const onClick = () => {
     if (!ref.current) return null;
@@ -61,7 +69,7 @@ export const MainView: FC<any> = () => {
       );
     }
 
-    fetch('https://localhost:7012/inference/predict', {
+    fetch('http://localhost:5059/inference/predict', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -74,7 +82,7 @@ export const MainView: FC<any> = () => {
   };
 
   const onRefresh = () => {
-    fetch('https://localhost:7012/auth/refresh', {
+    fetch('http://localhost:5059/auth/refresh', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +92,13 @@ export const MainView: FC<any> = () => {
         refreshToken: localStorage.getItem('refresh_token'),
       }),
     }).then((res: any) =>
-      res.text().then((data: any) => localStorage.setItem('access_token', data))
+      // res.text().then((data: any) => localStorage.setItem('access_token', data))
+      res.json().then((data: any) => {
+        localStorage.setItem('access_token', data.accessToken);
+        localStorage.setItem('refresh_token', data.refreshToken);
+        connection?.stop();
+        buildConnection();
+      })
     );
   };
 
@@ -105,8 +119,32 @@ export const MainView: FC<any> = () => {
         <div>Loading...</div>
       )}
       <Canvas ref={ref} />
-      <button onClick={onClick}>Predict</button>
-      <button onClick={onRefresh}>Refresh Token</button>
+      <div>
+        <button onClick={onClick}>Predict</button>
+        <button
+          onClick={() => {
+            if (ref.current) {
+              ref.current.innerHTML = '';
+            }
+          }}
+        >
+          Clear
+        </button>
+        <button onClick={() => ref.current?.lastChild?.remove()}>Undo</button>
+      </div>
+      <button
+        onClick={() => {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+        }}
+      >
+        Sign out
+      </button>
+      {localStorage.getItem('refresh_token')?.length && (
+        <button onClick={onRefresh}>Refresh Token</button>
+      )}
+      <Link to="test">Sing in page</Link>
+      <p>Some random text</p>
     </div>
   );
 };

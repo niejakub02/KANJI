@@ -99,13 +99,13 @@ namespace KANJI.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult<string>> RefreshToken(Payload2 payload)
+        public async Task<ActionResult<TokensDTO>> RefreshToken(Payload2 payload)
         {
             var jwt = new JwtSecurityTokenHandler();
             var validationParams = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("2ac898616a21259eba095d450d2794bbdff32819f64e7819a528944bb45917f0d8473a732f9317eb40efc5f41828620c614e252af89825e5a5d51587372f3476")),
+                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["TokensSecrets:Refresh"])),
                 ValidateIssuer = false,
                 ValidateAudience = false,
             };
@@ -114,17 +114,16 @@ namespace KANJI.Controllers
 
             var jwtToken = (JwtSecurityToken)validatedToken;
 
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["TokensSecrets:Access"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            Console.WriteLine("Otrzymany token jest ważny do: ", jwtToken.ValidTo);
 
-            var newJwt = new JwtSecurityToken(
-                claims: jwtToken.Claims,
-                expires: DateTime.Now.AddSeconds(30),
-                signingCredentials: creds);
-
-            string token = new JwtSecurityTokenHandler().WriteToken(newJwt);
-
-            return Ok(token);
+            string token = CreateToken(jwtToken.Claims, configuration["TokensSecrets:Access"], 30);
+            string refreshToken = CreateToken(jwtToken.Claims, configuration["TokensSecrets:Refresh"], 3600);
+            TokensDTO tokens = new()
+            {
+                AccessToken = token,
+                RefreshToken = refreshToken,
+            };
+            return Ok(tokens);
         }
 
         public string CreateToken(GoogleJsonWebSignature.Payload payload, string secret, int expiresIn)
@@ -138,6 +137,24 @@ namespace KANJI.Controllers
 
             ];
 
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var jwt = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddSeconds(expiresIn),
+                signingCredentials: creds);
+            
+
+            string token = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            Console.WriteLine(token);
+
+            return token;
+        }
+
+        public string CreateToken(IEnumerable<Claim> claims, string secret, int expiresIn)
+        {
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
