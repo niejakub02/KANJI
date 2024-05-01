@@ -1,29 +1,21 @@
-import { FC, useEffect, useRef } from 'react';
+import { useSignInGoogleQuery } from '@app/api';
+import { FC, useEffect } from 'react';
 
 export const GoogleCallbackPage: FC<unknown> = () => {
-  const isFirstRender = useRef<boolean>(true);
+  const code = new URLSearchParams(window.location.search).get('code');
+  const { data: tokens, isLoading } = useSignInGoogleQuery(code, {
+    skip: !code,
+  });
+
   useEffect(() => {
-    if (isFirstRender.current) {
-      const code = new URLSearchParams(window.location.search).get('code');
-      console.log(code);
-      fetch('http://localhost:5059/auth/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code,
-        }),
-      }).then((res: any) =>
-        res.json().then((data: any) => {
-          localStorage.setItem('access_token', data.accessToken);
-          localStorage.setItem('refresh_token', data.refreshToken);
-          window.location.href = 'http://localhost:3000';
-        })
-      );
+    if (!isLoading && tokens) {
+      localStorage.setItem('access_token', tokens.accessToken);
+      localStorage.setItem('refresh_token', tokens.refreshToken);
+      window.location.href = 'http://localhost:3000';
+    } else {
+      console.warn('Something went wrong');
     }
-    isFirstRender.current = false;
-  }, []);
+  }, [tokens, isLoading]);
 
   return <div>loading...</div>;
 };

@@ -47,3 +47,42 @@ export const drawImageOnCanvas = (
     img.onerror = reject;
   });
 };
+
+export const convertImageToGrayscaleArray = (
+  canvasContainer: HTMLDivElement | null
+): number[] | null => {
+  if (!canvasContainer) return null;
+  const height = 64;
+  const width = 64;
+
+  const virtualCanvas = document.createElement('canvas');
+  virtualCanvas.height = height;
+  virtualCanvas.width = width;
+  const virtualCtx = virtualCanvas.getContext('2d');
+
+  if (!virtualCtx) return null;
+
+  virtualCtx.fillStyle = 'black';
+  virtualCtx.fillRect(0, 0, virtualCanvas.width, virtualCanvas.height);
+
+  const atomicCanvas = [...canvasContainer.children] as HTMLCanvasElement[];
+
+  for (const canvas of atomicCanvas) {
+    virtualCtx.drawImage(canvas, 0, 0, width, height);
+  }
+
+  if (!virtualCtx) return null;
+  const uintarray = virtualCtx.getImageData(0, 0, 64, 64);
+  const grayscaleArray = [];
+
+  for (let i = 0; i < uintarray.data.length; i += 4) {
+    grayscaleArray.push(
+      (0.299 * uintarray.data[i] +
+        0.587 * uintarray.data[i + 1] +
+        0.114 * uintarray.data[i + 2]) /
+        255.0
+    );
+  }
+
+  return grayscaleArray;
+};

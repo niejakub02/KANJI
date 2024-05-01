@@ -11,12 +11,20 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: '@app',
+        replacement: path.resolve(__dirname, 'src/app'),
+      },
+      {
         find: '@components',
         replacement: path.resolve(__dirname, 'src/components'),
       },
       {
-        find: '@context',
-        replacement: path.resolve(__dirname, 'src/context'),
+        find: '@contexts',
+        replacement: path.resolve(__dirname, 'src/contexts'),
+      },
+      {
+        find: '@features',
+        replacement: path.resolve(__dirname, 'src/features'),
       },
       { find: '@pages', replacement: path.resolve(__dirname, 'src/pages') },
       { find: '@utils', replacement: path.resolve(__dirname, 'src/utils') },

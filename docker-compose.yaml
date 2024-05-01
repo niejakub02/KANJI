@@ -10,7 +10,8 @@ services:
     #    tmpfs:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
     build:
-      dockerfile: src/KANJI.DATABASE/Dockerfile
+      context: ./src/KANJI.DATABASE
+      dockerfile: Dockerfile
     ports:
       - 5432:5432
 

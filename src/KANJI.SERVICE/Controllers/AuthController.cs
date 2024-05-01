@@ -16,6 +16,7 @@ using KANJI.Data;
 using KANJI.Services;
 using KANJI.Models.DTO;
 using Microsoft.AspNetCore.DataProtection;
+using System.Data;
 
 namespace KANJI.Controllers
 {
@@ -48,20 +49,20 @@ namespace KANJI.Controllers
         private readonly DataContext dataContext;
         private readonly IAuthService authService;
         private readonly IConfiguration configuration;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public AuthController(DataContext _dataContext, IAuthService _authService, IConfiguration _configuration)
+        public AuthController(DataContext _dataContext, IAuthService _authService, IConfiguration _configuration, IHttpContextAccessor _httpContextAccessor)
         {
             dataContext = _dataContext;
             authService = _authService;
             configuration = _configuration;
+            httpContextAccessor = _httpContextAccessor;
         }
 
-        //[Authorize]
-        [HttpPost("google")]
-        public async Task<ActionResult<TokensDTO>> SignIn(Payload payload)
+        [HttpGet("sign-in/google")]
+        public async Task<ActionResult<TokensDTO>> SignIn([FromQuery] string code)
         {
-            var tokenPayload = await authService.GetIdToken(payload);
-
+            var tokenPayload = await authService.GetIdToken(code);
             // sprawdz pod SUB, czy uzytkownik jest w bazie, jak nie to go dodaj i mimo wszystko utworz token
             User? user = await dataContext.Users.FirstOrDefaultAsync(u => u.Sub == tokenPayload.Subject);
 
@@ -86,10 +87,8 @@ namespace KANJI.Controllers
             }
 
             // stworz token
-            Console.WriteLine(tokenPayload.Email);
-
-            string token = CreateToken(tokenPayload, configuration["TokensSecrets:Access"], 30);
-            string refreshToken = CreateToken(tokenPayload, configuration["TokensSecrets:Refresh"], 3600);
+            string token = authService.CreateToken(tokenPayload, configuration["TokensSecrets:Access"], 30);
+            string refreshToken = authService.CreateToken(tokenPayload, configuration["TokensSecrets:Refresh"], 3600);
             TokensDTO tokens = new()
             {
                 AccessToken = token,
@@ -98,7 +97,7 @@ namespace KANJI.Controllers
             return Ok(tokens);
         }
 
-        [HttpPost("refresh")]
+        [HttpPost("refresh-token")]
         public async Task<ActionResult<TokensDTO>> RefreshToken(Payload2 payload)
         {
             var jwt = new JwtSecurityTokenHandler();
@@ -109,15 +108,10 @@ namespace KANJI.Controllers
                 ValidateIssuer = false,
                 ValidateAudience = false,
             };
-
             jwt.ValidateToken(payload.refreshToken, validationParams, out SecurityToken validatedToken);
-
             var jwtToken = (JwtSecurityToken)validatedToken;
-
-            Console.WriteLine("Otrzymany token jest ważny do: ", jwtToken.ValidTo);
-
-            string token = CreateToken(jwtToken.Claims, configuration["TokensSecrets:Access"], 30);
-            string refreshToken = CreateToken(jwtToken.Claims, configuration["TokensSecrets:Refresh"], 3600);
+            string token = authService.CreateToken(jwtToken.Claims, configuration["TokensSecrets:Access"], 30);
+            string refreshToken = authService.CreateToken(jwtToken.Claims, configuration["TokensSecrets:Refresh"], 3600);
             TokensDTO tokens = new()
             {
                 AccessToken = token,
@@ -126,48 +120,25 @@ namespace KANJI.Controllers
             return Ok(tokens);
         }
 
-        public string CreateToken(GoogleJsonWebSignature.Payload payload, string secret, int expiresIn)
+        [Authorize]
+        [HttpGet("user-details")]
+        public async Task<ActionResult<UserDetails>> GetUserDetails()
         {
-            List<Claim> claims =
-            [
-                new Claim(ClaimTypes.NameIdentifier, payload.Subject),
-                new Claim(ClaimTypes.Email, payload.Email),
-                new Claim(ClaimTypes.GivenName, payload.GivenName),
-                new Claim(ClaimTypes.Surname, payload.FamilyName),
+            var identity = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
 
-            ];
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
 
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secret));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var jwt = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddSeconds(expiresIn),
-                signingCredentials: creds);
-            
-
-            string token = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            Console.WriteLine(token);
-
-            return token;
-        }
-
-        public string CreateToken(IEnumerable<Claim> claims, string secret, int expiresIn)
-        {
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secret));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var jwt = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddSeconds(expiresIn),
-                signingCredentials: creds);
-
-            string token = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            Console.WriteLine(token);
-
-            return token;
+                return new UserDetails
+                {
+                    Sub = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value,
+                    Email = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
+                    GivenName = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.GivenName)?.Value,
+                    Surname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Surname)?.Value,
+                };
+            }
+            return Ok(null);
         }
     }
 }

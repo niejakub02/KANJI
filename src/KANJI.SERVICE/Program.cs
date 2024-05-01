@@ -47,24 +47,24 @@ builder.Services.AddAuthentication()
              ValidateAudience = false,
              ClockSkew = TimeSpan.Zero,
          };
-         options.Events = new JwtBearerEvents
-         {
-             OnMessageReceived = context =>
-             {
-                 var accessToken = context.Request.Query["access_token"];
+         //options.Events = new JwtBearerEvents
+         //{
+         //    OnMessageReceived = context =>
+         //    {
+         //        var accessToken = context.Request.Query["access_token"];
 
-                 Console.WriteLine(accessToken);
-                 // If the request is for our hub...
-                 var path = context.HttpContext.Request.Path;
-                 if (!string.IsNullOrEmpty(accessToken) &&
-                     (path.StartsWithSegments("/community")))
-                 {
-                     // Read the token out of the query string
-                     context.Token = accessToken;
-                 }
-                 return Task.CompletedTask;
-             }
-         };
+         //        Console.WriteLine(accessToken);
+         //        // If the request is for our hub...
+         //        var path = context.HttpContext.Request.Path;
+         //        if (!string.IsNullOrEmpty(accessToken) &&
+         //            (path.StartsWithSegments("/community")))
+         //        {
+         //            // Read the token out of the query string
+         //            context.Token = accessToken;
+         //        }
+         //        return Task.CompletedTask;
+         //    }
+         //};
      });
 
 

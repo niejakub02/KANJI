@@ -19,7 +19,7 @@ namespace KANJI.Hubs
             httpContextAccessor = _httpContextAccessor;
         }
 
-        [Authorize]
+        //[Authorize]
         public async Task Send(Message message)
         {
             var identity = httpContextAccessor.HttpContext?.User.Identity as ClaimsIdentity;
