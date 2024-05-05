@@ -1,0 +1,8 @@
+.xd {
+  background-color: var(--ant-color-bg-container);
+}
+
+.test {
+  --ant-color-primary: var(--ant-color-bg-container);
+  --ant-color-primary-hover: red;
+}

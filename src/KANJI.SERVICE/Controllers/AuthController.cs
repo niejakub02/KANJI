@@ -100,6 +100,8 @@ namespace KANJI.Controllers
         [HttpPost("refresh-token")]
         public async Task<ActionResult<TokensDTO>> RefreshToken(Payload2 payload)
         {
+            try
+            {
             var jwt = new JwtSecurityTokenHandler();
             var validationParams = new TokenValidationParameters
             {
@@ -108,16 +110,21 @@ namespace KANJI.Controllers
                 ValidateIssuer = false,
                 ValidateAudience = false,
             };
-            jwt.ValidateToken(payload.refreshToken, validationParams, out SecurityToken validatedToken);
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            string token = authService.CreateToken(jwtToken.Claims, configuration["TokensSecrets:Access"], 30);
-            string refreshToken = authService.CreateToken(jwtToken.Claims, configuration["TokensSecrets:Refresh"], 3600);
-            TokensDTO tokens = new()
+                jwt.ValidateToken(payload.refreshToken, validationParams, out SecurityToken validatedToken);
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                string token = authService.CreateToken(jwtToken.Claims, configuration["TokensSecrets:Access"], 30);
+                string refreshToken = authService.CreateToken(jwtToken.Claims, configuration["TokensSecrets:Refresh"], 3600);
+                TokensDTO tokens = new()
+                {
+                    AccessToken = token,
+                    RefreshToken = refreshToken,
+                };
+                return Ok(tokens);
+            }
+            catch
             {
-                AccessToken = token,
-                RefreshToken = refreshToken,
-            };
-            return Ok(tokens);
+                return BadRequest();
+            }
         }
 
         [Authorize]

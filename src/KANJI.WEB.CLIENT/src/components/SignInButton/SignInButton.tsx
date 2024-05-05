@@ -1,5 +1,7 @@
+import { GoogleOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '@app/store';
 import { signOut } from '@features/auth/auth.slice';
+import { Button } from 'antd';
 import { FC } from 'react';
 
 const SignInButton: FC<unknown> = () => {
@@ -26,9 +28,12 @@ const SignInButton: FC<unknown> = () => {
   const onSignOut = () => dispatch(signOut());
 
   return !user ? (
-    <button onClick={onSignIn}>Sign in</button>
+    <Button onClick={onSignIn}>
+      <GoogleOutlined />
+      Sign in
+    </Button>
   ) : (
-    <button onClick={onSignOut}>Sign out</button>
+    <Button onClick={onSignOut}>Sign out</Button>
   );
 };
 

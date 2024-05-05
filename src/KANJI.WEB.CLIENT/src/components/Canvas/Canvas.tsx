@@ -1,6 +1,7 @@
 import { useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import './Canvas.scss';
 import { createCanvas, drawSolidLine } from '@utils/canvasUtils';
+import { useThemeContext } from '@contexts/Theme.context';
 
 interface CanvasProps {
   onStrokeAdd?: () => void;
@@ -8,6 +9,7 @@ interface CanvasProps {
 
 export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
   ({ onStrokeAdd }, ref) => {
+    const { isDarkMode } = useThemeContext();
     const canvasContainer = useRef<HTMLDivElement>(null);
 
     useImperativeHandle(
@@ -46,7 +48,9 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
 
     return (
       <div
-        className="canvas-container"
+        className={`canvas-container ${
+          isDarkMode ? 'canvas-container--dark' : ''
+        }`}
         ref={canvasContainer}
         onPointerDown={drawStart}
         onPointerUp={strokeFinish}

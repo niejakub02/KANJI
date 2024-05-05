@@ -57,7 +57,12 @@ export const baseQueryWithReauth: BaseQueryFn<
       );
       result = await baseQuery(args, api, extraOptions);
     } else {
-      api.dispatch(signOut());
+      // A hack, i'll do it manually in the hoook,
+      // since i want to display message on invalid refresh
+      // token, but cleaning local storage here seems to
+      // enable skip property for useQuery, thus no
+      // error is thrown
+      if (args !== 'auth/user-details') api.dispatch(signOut());
     }
   }
   return result;

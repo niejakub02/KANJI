@@ -1,4 +1,5 @@
 import { useSignInGoogleQuery } from '@app/api';
+import { Spin } from 'antd';
 import { FC, useEffect } from 'react';
 
 export const GoogleCallbackPage: FC<unknown> = () => {
@@ -17,7 +18,7 @@ export const GoogleCallbackPage: FC<unknown> = () => {
     }
   }, [tokens, isLoading]);
 
-  return <div>loading...</div>;
+  return <Spin />;
 };
 
 export default GoogleCallbackPage;

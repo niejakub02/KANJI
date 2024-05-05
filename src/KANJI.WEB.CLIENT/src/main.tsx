@@ -4,11 +4,17 @@ import './main.scss';
 import { App } from './App';
 import { Provider } from 'react-redux';
 import store from './app/store';
+import ThemeProvider from '@contexts/Theme.context';
+import CommunityContextProvider from '@contexts/Community.context';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <ThemeProvider>
+      <CommunityContextProvider>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </CommunityContextProvider>
+    </ThemeProvider>
   </StrictMode>
 );

@@ -1,40 +1,34 @@
-import { FC, useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { FC } from 'react';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { GoogleCallbackPage, HomePage } from './pages';
-import CommunityContextProvider from './contexts/Community.context';
-import { useGetUserDetailsQuery } from './app/api';
-import { useAppDispatch } from './app/store';
-import { signIn, signOut } from './features/auth/auth.slice';
-import { isTokenAvailable } from '@utils/authUtils';
+import { GuardedRoute } from '@components/GuardedRoute';
+import { useAuthorization } from './hooks/useAuthorization';
+import './components/MainView/MainView.scss';
+import { Spin } from 'antd';
 
 export const App: FC<unknown> = () => {
-  const dispatch = useAppDispatch();
-  const { data: userDetails, isLoading } = useGetUserDetailsQuery(undefined, {
-    skip: !isTokenAvailable(),
-  });
+  const { isLoading } = useAuthorization();
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (userDetails) {
-        dispatch(signIn(userDetails));
-      } else {
-        dispatch(signOut());
-      }
-    }
-  }, [userDetails, isLoading, dispatch]);
-
-  return (
-    <CommunityContextProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route
-            path="/auth/google/callback"
-            element={<GoogleCallbackPage />}
-          />
-        </Routes>
-      </BrowserRouter>
-    </CommunityContextProvider>
+  return isLoading ? (
+    <Spin />
+  ) : (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/auth/google/callback" element={<GoogleCallbackPage />} />
+        <Route
+          path="/xxx"
+          element={
+            <GuardedRoute>
+              <div>
+                <div>test</div>
+                <Link to="/">back</Link>
+              </div>
+            </GuardedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
