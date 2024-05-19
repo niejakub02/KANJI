@@ -143,6 +143,7 @@ namespace KANJI.Controllers
                     Email = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
                     GivenName = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.GivenName)?.Value,
                     Surname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Surname)?.Value,
+                    Picture = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Uri)?.Value,
                 };
             }
             return Ok(null);

@@ -54,7 +54,7 @@ namespace KANJI.Services
                 new Claim(ClaimTypes.Email, payload.Email),
                 new Claim(ClaimTypes.GivenName, payload?.GivenName ?? String.Empty),
                 new Claim(ClaimTypes.Surname, payload?.FamilyName ?? String.Empty),
-
+                new Claim(ClaimTypes.Uri, payload?.Picture ?? String.Empty)
             ];
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secret));

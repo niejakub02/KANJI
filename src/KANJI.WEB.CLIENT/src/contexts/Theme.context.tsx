@@ -1,5 +1,6 @@
 import { ConfigProvider, theme, App as AntdApp, message } from 'antd';
 import { MessageInstance } from 'antd/es/message/interface';
+import { AliasToken } from 'antd/es/theme/internal';
 import { ReactNode, FC, useState, createContext, useContext } from 'react';
 
 type ThemeProviderProps = {
@@ -20,21 +21,23 @@ const initalState: ThemeContext = {
 
 const themeContext = createContext<ThemeContext>(initalState);
 
+const lightTheme: Partial<AliasToken> = {
+  colorBgContainer: '#F2F3F7',
+  colorBgLayout: '#D7D9E1',
+};
+
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(initalState.isDarkMode);
-  const { defaultAlgorithm, darkAlgorithm } = theme;
-  // const { defaultAlgorithm, darkAlgorithm, useToken } = theme;
+  const { defaultAlgorithm, darkAlgorithm, useToken } = theme;
   const [messageApi, contextHolder] = message.useMessage();
-  // const { token } = useToken();
-
+  const { token } = useToken();
+  console.log(token.colorBgContainer);
   return (
     <ConfigProvider
       theme={{
         cssVar: true,
         algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
-        // token: {
-        //   colorBgContainer: isDarkMode ? 'violet' : token.colorBgContainer,
-        // },
+        token: isDarkMode ? undefined : lightTheme,
       }}
     >
       <themeContext.Provider value={{ isDarkMode, setIsDarkMode, messageApi }}>

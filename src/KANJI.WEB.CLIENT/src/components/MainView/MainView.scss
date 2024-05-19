@@ -6,3 +6,31 @@
   --ant-color-primary: var(--ant-color-bg-container);
   --ant-color-primary-hover: red;
 }
+
+.workarea {
+  // display: flex;
+  flex-direction: column;
+  justify-content: center;
+  // gap: 2rem;
+  min-width: 20rem;
+  align-items: center;
+  background-color: var(--ant-color-bg-container);
+  min-height: 80%;
+  width: 80%;
+  border-radius: 2rem;
+  overflow: hidden;
+
+  display: grid;
+  grid-template-areas:
+    'head head'
+    'nav  main'
+    'nav  main';
+  grid-template-rows: minmax(auto, 4rem) 1fr 1fr;
+  grid-template-columns: minmax(auto, 15rem) 1fr;
+
+  &__content {
+    grid-area: main;
+    height: 100%;
+    width: 100%;
+  }
+}

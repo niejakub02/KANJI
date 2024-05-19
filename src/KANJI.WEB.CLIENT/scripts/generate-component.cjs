@@ -28,6 +28,7 @@ const generateComponent = () => {
 
 const createComponent = () => {
   const blankComponent = `import { FC } from 'react';
+import './${componentName}.scss';
 
 const ${componentName}: FC<unknown> = () => {
   return <div></div>;

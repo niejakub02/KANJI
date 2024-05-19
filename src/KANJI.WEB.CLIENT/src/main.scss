@@ -7,6 +7,7 @@
   font-family: 'Noto Sans JP', 'Virgil', Arial, Helvetica, sans-serif;
   font-weight: 900;
   font-size: 12px;
+  box-sizing: border-box;
 }
 body,
 html {
@@ -23,7 +24,7 @@ html {
   .ant-app > div {
     height: 100%;
     width: 100%;
-    background-color: var(--ant-color-bg-container);
+    background-color: var(--ant-color-bg-layout);
     display: flex;
     justify-content: center;
     align-items: center;

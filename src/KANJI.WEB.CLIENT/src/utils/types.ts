@@ -13,4 +13,5 @@ export type User = {
   email: string;
   givenName?: string;
   surname?: string;
+  picture?: string;
 };
