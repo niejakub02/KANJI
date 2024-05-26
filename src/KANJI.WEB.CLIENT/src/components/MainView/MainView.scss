@@ -32,5 +32,56 @@
     grid-area: main;
     height: 100%;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    .content-wrapper {
+      display: grid;
+      height: 80%;
+      width: 80%;
+      grid-template-areas:
+      'top top top'
+      'main sub-one sub-one'
+      'main sub-two sub-two';
+      grid-template-rows: minmax(auto, 4rem) 1fr 1fr;
+      grid-template-columns: 3fr 1fr 1fr;
+      gap: 1.5rem;
+      
+      &__top {
+        grid-area: top;
+      }
+
+      &__main {
+        grid-area: main;
+
+      }
+
+      &__sub-one {
+        grid-area: sub-one;
+
+      }
+
+      &__sub-two {
+        grid-area: sub-two;
+
+      }
+      > * {
+        outline: 1px solid red;
+      }
+
+      @media screen and (width < 1280px) {
+        height: 100%;
+        width: 100%;
+        padding: 1.5rem;
+      }
+    }
+  }
+
+  @media screen and (width < 1280px) {
+    width: 100%;
+    min-height: 100%;
+    border-radius: 0;
   }
 }

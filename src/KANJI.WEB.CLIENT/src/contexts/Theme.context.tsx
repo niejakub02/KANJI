@@ -28,10 +28,11 @@ const lightTheme: Partial<AliasToken> = {
 
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(initalState.isDarkMode);
-  const { defaultAlgorithm, darkAlgorithm, useToken } = theme;
+  const { defaultAlgorithm, darkAlgorithm } = theme;
+  // const { defaultAlgorithm, darkAlgorithm, useToken } = theme;
   const [messageApi, contextHolder] = message.useMessage();
-  const { token } = useToken();
-  console.log(token.colorBgContainer);
+  // const { token } = useToken();
+
   return (
     <ConfigProvider
       theme={{

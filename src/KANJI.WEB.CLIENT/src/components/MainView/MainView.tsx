@@ -11,6 +11,8 @@ import { removeTokensFromStorage } from '@utils/authUtils';
 import { Button } from 'antd';
 import { Header } from '@components/Header';
 import { SideBar } from '@components/SideBar';
+import { DrawingCard } from '@features/drawing/DrawingCard/DrawingCard';
+import { ViewCard } from '@features/global/ViewCard/ViewCard';
 
 export const MainView: FC<any> = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -32,7 +34,13 @@ export const MainView: FC<any> = () => {
           <Header />
           <SideBar />
           <div className="workarea__content">
-            <SignInButton />
+            <div className="content-wrapper">
+              <ViewCard className="content-wrapper__top" />
+              <DrawingCard className="content-wrapper__main" />
+              <div className="content-wrapper__sub-one"></div>
+              <div className="content-wrapper__sub-two"></div>
+            </div>
+            {/* <SignInButton /> */}
           </div>
         </div>
       )}

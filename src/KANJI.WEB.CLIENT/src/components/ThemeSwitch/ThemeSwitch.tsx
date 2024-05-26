@@ -1,7 +1,7 @@
 import { MoonFilled, SunFilled } from '@ant-design/icons';
 import { useThemeContext } from '@contexts/Theme.context';
 import { Switch } from 'antd';
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 import './ThemeSwitch.scss';
 
 const ThemeSwitch: FC<unknown> = () => {
@@ -10,7 +10,8 @@ const ThemeSwitch: FC<unknown> = () => {
   return (
     <Switch
       checked={isDarkMode}
-      onChange={() => {
+      onChange={(_, e: MouseEvent) => {
+        e.stopPropagation();
         messageApi?.info('mode changed!');
         setIsDarkMode((prev) => !prev);
       }}

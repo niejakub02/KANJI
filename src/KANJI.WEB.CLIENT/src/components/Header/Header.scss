@@ -8,4 +8,18 @@
   background-color: var(--ant-color-bg-container);
   box-shadow: 0 16px 64px 0px rgba(0, 0, 0, 0.1);
   grid-area: head;
+
+  .ant-avatar {
+    cursor: pointer;
+  }
+}
+
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  button {
+    margin-top: 1px;
+  }
 }

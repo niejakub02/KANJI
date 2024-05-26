@@ -1,14 +1,19 @@
 @font-face {
-  font-family: 'Virgil';
-  src: url('Virgil.woff2');
+  font-family: 'Noto Sans JP';
+  src: url('NotoSansJP.ttf');
 }
 
 * {
-  font-family: 'Noto Sans JP', 'Virgil', Arial, Helvetica, sans-serif;
-  font-weight: 900;
-  font-size: 12px;
-  box-sizing: border-box;
+  font-family: 'Noto Sans JP', Arial, Helvetica, sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 12px !important;
+  box-sizing: border-box !important;
+
+  // @media screen and (width < 1280px) {
+  //   font-size: 16px !important;
+  // }
 }
+
 body,
 html {
   margin: 0;
