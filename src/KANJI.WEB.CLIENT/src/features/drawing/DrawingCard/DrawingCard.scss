@@ -1,5 +1,12 @@
 .drawing-card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ant-spin-nested-loading:not(:has(> .ant-spin-blur)) {
+  &,
+  .ant-spin-container {
+    position: unset !important;
+  }
 }

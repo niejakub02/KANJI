@@ -3,10 +3,20 @@
   src: url('NotoSansJP.ttf');
 }
 
-* {
+:root {
+  .ant-app.light {
+    --card-shadow: rgba(0, 0, 0, 0.08);
+  }
+
+  .ant-app.dark {
+    --card-shadow: rgba(0, 0, 0, 0.33);
+  }
+}
+
+*:not(.ant) {
   font-family: 'Noto Sans JP', Arial, Helvetica, sans-serif !important;
-  font-weight: 900 !important;
-  font-size: 12px !important;
+  font-weight: 700 !important;
+  // font-size: 12px !important;
   box-sizing: border-box !important;
 
   // @media screen and (width < 1280px) {

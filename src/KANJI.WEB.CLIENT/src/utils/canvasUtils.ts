@@ -13,7 +13,7 @@ export const drawSolidLine = (
   x: number,
   y: number
 ) => {
-  context.lineWidth = 20;
+  context.lineWidth = 14;
   context.lineCap = 'round';
   context.lineJoin = 'round';
   context.strokeStyle = 'white';

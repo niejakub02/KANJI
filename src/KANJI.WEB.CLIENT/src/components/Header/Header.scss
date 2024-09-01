@@ -6,7 +6,7 @@
   justify-content: space-between;
   padding: 0 16px;
   background-color: var(--ant-color-bg-container);
-  box-shadow: 0 16px 64px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 16px 64px 0px var(--card-shadow);
   grid-area: head;
 
   .ant-avatar {

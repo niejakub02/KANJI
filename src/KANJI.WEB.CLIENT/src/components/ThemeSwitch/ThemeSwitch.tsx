@@ -12,7 +12,7 @@ const ThemeSwitch: FC<unknown> = () => {
       checked={isDarkMode}
       onChange={(_, e: MouseEvent) => {
         e.stopPropagation();
-        messageApi?.info('mode changed!');
+        messageApi?.info('Theme switched!');
         setIsDarkMode((prev) => !prev);
       }}
       checkedChildren={<MoonFilled />}

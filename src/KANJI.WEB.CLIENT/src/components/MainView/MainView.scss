@@ -15,7 +15,8 @@
   min-width: 20rem;
   align-items: center;
   background-color: var(--ant-color-bg-container);
-  min-height: 80%;
+  // background-color: var(--ant-color-bg-container);
+  height: 80%;
   width: 80%;
   border-radius: 2rem;
   overflow: hidden;
@@ -36,45 +37,54 @@
     justify-content: center;
     align-items: center;
 
-
     .content-wrapper {
       display: grid;
-      height: 80%;
-      width: 80%;
+      height: 100%;
+      width: 100%;
+      padding: 1.5rem;
       grid-template-areas:
-      'top top top'
-      'main sub-one sub-one'
-      'main sub-two sub-two';
+        'top top top'
+        'main sub-one sub-one'
+        'main sub-one sub-one';
       grid-template-rows: minmax(auto, 4rem) 1fr 1fr;
-      grid-template-columns: 3fr 1fr 1fr;
+      grid-template-columns: 2fr 1fr;
       gap: 1.5rem;
-      
+
+      &__top,
+      &__main,
+      &__sub-one {
+        border-radius: 2rem;
+        background-color: var(--ant-color-bg-container);
+
+        box-shadow: 0 16px 64px 0px var(--card-shadow);
+      }
+
       &__top {
         grid-area: top;
       }
 
       &__main {
         grid-area: main;
-
       }
 
       &__sub-one {
         grid-area: sub-one;
-
       }
 
-      &__sub-two {
-        grid-area: sub-two;
-
-      }
-      > * {
-        outline: 1px solid red;
-      }
+      // > * {
+      //   outline: 1px solid rgba(255, 0, 0, 0.1);
+      // }
 
       @media screen and (width < 1280px) {
-        height: 100%;
-        width: 100%;
-        padding: 1.5rem;
+        // height: 100%;
+        // width: 100%;
+        // padding: 1.5rem;
+
+        grid-template-areas:
+          'top top top'
+          'main main main'
+          'sub-one sub-one sub-one';
+        grid-template-rows: minmax(auto, 4rem) auto minmax(auto, 4rem);
       }
     }
   }

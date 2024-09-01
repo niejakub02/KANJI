@@ -6,14 +6,17 @@ import { Provider } from 'react-redux';
 import store from './app/store';
 import ThemeProvider from '@contexts/Theme.context';
 import CommunityContextProvider from '@contexts/Community.context';
+import { CanvasControlProvider } from '@contexts/Canvas.control.context';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
       <CommunityContextProvider>
-        <Provider store={store}>
-          <App />
-        </Provider>
+        <CanvasControlProvider>
+          <Provider store={store}>
+            <App />
+          </Provider>
+        </CanvasControlProvider>
       </CommunityContextProvider>
     </ThemeProvider>
   </StrictMode>

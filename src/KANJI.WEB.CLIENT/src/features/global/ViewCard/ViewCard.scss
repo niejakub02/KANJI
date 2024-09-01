@@ -1,3 +1,12 @@
 .view-card {
-  border-radius: 3rem;
+  // border-radius: 3rem;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &--colorized {
+    color: var(--ant-color-primary);
+  }
 }

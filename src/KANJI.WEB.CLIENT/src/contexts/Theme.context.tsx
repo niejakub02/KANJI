@@ -43,7 +43,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     >
       <themeContext.Provider value={{ isDarkMode, setIsDarkMode, messageApi }}>
         {contextHolder}
-        <AntdApp>{children}</AntdApp>
+        <AntdApp className={isDarkMode ? 'dark' : 'light'}>{children}</AntdApp>
       </themeContext.Provider>
     </ConfigProvider>
   );
