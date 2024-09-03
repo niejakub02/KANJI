@@ -1,6 +1,6 @@
 import { usePredictMutation } from '@app/api';
 import './PredicitonTable.scss';
-import { Spin } from 'antd';
+import { Popover, Spin } from 'antd';
 import { useMemo } from 'react';
 
 export const PredicitonTable = () => {
@@ -21,17 +21,26 @@ export const PredicitonTable = () => {
     <Spin />
   ) : (
     <table className="prediction-table">
-      <tr>
-        <th>Literal</th>
-        <th>Probability</th>
-      </tr>
-      {formattedPredicitions?.map((predicition, index) => (
-        //change this key later
-        <tr key={index}>
-          <td>{predicition.literal}</td>
-          <td>{`${predicition.probability} %`}</td>
+      <thead>
+        <tr>
+          <th>Literal</th>
+          <th>Probability</th>
         </tr>
-      ))}
+      </thead>
+      <tbody>
+        {formattedPredicitions?.map(({ literal, probability }, index) => (
+          //change this key later
+          <tr key={index}>
+            <Popover
+              content={<div className="literal-popover">{literal}</div>}
+              trigger="click"
+            >
+              <td>{literal}</td>
+            </Popover>
+            <td>{`${probability} %`}</td>
+          </tr>
+        ))}
+      </tbody>
     </table>
   );
 };

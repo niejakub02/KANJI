@@ -9,12 +9,14 @@ export const DrawingCard: FC<Partial<HTMLDivElement>> = ({ className }) => {
   const [_, { isLoading }] = usePredictMutation({
     fixedCacheKey: 'shared-prediction',
   });
-  const { ref } = useCanvasControlContext();
+  const { ref, setStrokes } = useCanvasControlContext();
+
+  const handleOnStrokeAdd = () => setStrokes((prev) => prev + 1);
 
   return (
     <div className={`drawing-card ${className}`}>
       <Spin spinning={isLoading}>
-        <Canvas ref={ref} />
+        <Canvas ref={ref} onStrokeAdd={handleOnStrokeAdd} />
       </Spin>
     </div>
   );

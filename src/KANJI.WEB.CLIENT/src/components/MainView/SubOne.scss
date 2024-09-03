@@ -6,6 +6,9 @@
   gap: 1rem;
   padding: 2rem;
 
+  .no-drawing-indicator {
+    text-align: center;
+  }
   .buttons-clip {
     display: flex;
     flex-direction: column;

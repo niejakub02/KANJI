@@ -9,6 +9,7 @@
 
 .workarea {
   // display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: center;
   // gap: 2rem;
@@ -17,9 +18,10 @@
   background-color: var(--ant-color-bg-container);
   // background-color: var(--ant-color-bg-container);
   height: 80%;
+  min-height: 80vh;
   width: 80%;
   border-radius: 2rem;
-  overflow: hidden;
+  overflow-y: hidden;
 
   display: grid;
   grid-template-areas:
@@ -55,7 +57,7 @@
       &__sub-one {
         border-radius: 2rem;
         background-color: var(--ant-color-bg-container);
-
+        padding: 2rem;
         box-shadow: 0 16px 64px 0px var(--card-shadow);
       }
 
@@ -74,24 +76,27 @@
       // > * {
       //   outline: 1px solid rgba(255, 0, 0, 0.1);
       // }
+    }
+  }
 
-      @media screen and (width < 1280px) {
-        // height: 100%;
-        // width: 100%;
-        // padding: 1.5rem;
+  @media screen and (width < 1024px) {
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
 
-        grid-template-areas:
-          'top top top'
-          'main main main'
-          'sub-one sub-one sub-one';
-        grid-template-rows: minmax(auto, 4rem) auto minmax(auto, 4rem);
-      }
+    .content-wrapper {
+      grid-template-areas:
+        'top top top'
+        'main main main'
+        'sub-one sub-one sub-one';
+      grid-template-rows: minmax(auto, 4rem) auto minmax(210px, auto);
     }
   }
 
   @media screen and (width < 1280px) {
-    width: 100%;
-    min-height: 100%;
-    border-radius: 0;
+    grid-template-areas:
+      'head head'
+      'main  main'
+      'main  main';
   }
 }

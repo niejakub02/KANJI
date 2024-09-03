@@ -5,3 +5,35 @@
   background-color: var(--ant-color-bg-container);
   box-shadow: 0 16px 64px 0px var(--card-shadow);
 }
+
+#menu-button {
+  display: none;
+}
+
+@media screen and (width < 1280px) {
+  .side-bar {
+    display: none;
+
+    &--open {
+      display: initial;
+      position: absolute;
+      z-index: 10;
+      width: 25%;
+      top: 4rem;
+    }
+  }
+  #menu-button {
+    display: initial;
+    position: absolute;
+    left: 0;
+    z-index: 10;
+    margin: 0.5rem 1rem;
+    top: 4rem;
+  }
+}
+
+@media screen and (width < 1024px) {
+  .side-bar {
+    width: 100%;
+  }
+}

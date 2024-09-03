@@ -44,12 +44,19 @@ const Header: FC<unknown> = () => {
   return (
     <div className="header">
       <img src={isDarkMode ? LogoDark : LogoLight} className="logo" />
+
+      {/* placeholder */}
       <div></div>
+
       <Input
         style={{ width: '20%' }}
         placeholder="Search for literals, users etc."
         prefix={<SearchOutlined />}
       />
+
+      {/* placeholder */}
+      <div></div>
+
       <Dropdown
         menu={{
           items,
@@ -61,7 +68,6 @@ const Header: FC<unknown> = () => {
           <Avatar size={32} icon={<UserOutlined />} />
         )}
       </Dropdown>
-      <div></div>
     </div>
   );
 };

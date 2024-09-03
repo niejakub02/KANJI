@@ -7,19 +7,16 @@ import { PredicitonTable } from '@components/PredicitonTable/PredicitonTable';
 import './SubOne.scss';
 
 export const SubOne = () => {
-  const [predict, { reset: resetPrediciton }] = usePredictMutation({
-    fixedCacheKey: 'shared-prediction',
-  });
-  const { ref, reset: resetCanvas } = useCanvasControlContext();
+  const [predict, { data: predicitons, reset: resetPrediciton }] =
+    usePredictMutation({
+      fixedCacheKey: 'shared-prediction',
+    });
+  const { ref, reset: resetCanvas, strokes } = useCanvasControlContext();
 
   const handleOnPredict = () => {
     const grayscaleArray = convertImageToGrayscaleArray(ref.current);
     if (!grayscaleArray) return;
-    predict(grayscaleArray)
-      .unwrap()
-      .then((predictions) => {
-        console.log(predictions);
-      });
+    predict(grayscaleArray);
   };
 
   const handleOnReset = () => {
@@ -29,7 +26,14 @@ export const SubOne = () => {
 
   return (
     <div className="content-wrapper__sub-one">
-      <PredicitonTable />
+      {!strokes && (
+        <div className="no-drawing-indicator">
+          You haven't drawn
+          <br /> anything yet 😿
+        </div>
+      )}
+      {!!predicitons?.length && <PredicitonTable />}
+
       <div className="buttons-clip">
         <Button
           type="primary"
@@ -37,10 +41,16 @@ export const SubOne = () => {
           icon={<FunctionOutlined />}
           onClick={handleOnPredict}
           className="predict-button"
+          disabled={!strokes}
         >
           Predict
         </Button>
-        <Button type="text" icon={<DeleteOutlined />} onClick={handleOnReset}>
+        <Button
+          type="text"
+          icon={<DeleteOutlined />}
+          onClick={handleOnReset}
+          disabled={!strokes}
+        >
           Clear
         </Button>
       </div>

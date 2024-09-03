@@ -47,9 +47,7 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
       const context = canvas.getContext('2d');
       const { current: container } = canvasContainer;
       if (!context || !container) return;
-      const x = e.pageX - container.offsetLeft;
-      const y = e.pageY - container.offsetTop;
-      drawSolidLine(context, x, y);
+      drawSolidLine(context, e.offsetX, e.offsetY);
     }, []);
 
     return (
