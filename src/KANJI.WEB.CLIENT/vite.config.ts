@@ -23,6 +23,10 @@ export default defineConfig({
         replacement: path.resolve(__dirname, 'src/contexts'),
       },
       {
+        find: '@hooks',
+        replacement: path.resolve(__dirname, 'src/hooks'),
+      },
+      {
         find: '@features',
         replacement: path.resolve(__dirname, 'src/features'),
       },

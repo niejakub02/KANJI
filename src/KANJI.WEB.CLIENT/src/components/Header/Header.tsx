@@ -1,19 +1,25 @@
-import { FC, useMemo } from 'react';
+import { FC, MouseEvent, useCallback, useMemo } from 'react';
 import './Header.scss';
 import LogoLight from '/logoLight.svg';
 import LogoDark from '/logoDark.svg';
 import { ThemeSwitch } from '@components/ThemeSwitch';
 import { useThemeContext } from '@contexts/Theme.context';
 import { Avatar, Dropdown, Input } from 'antd';
-import { useAppDispatch, useAppSelector } from '@app/store';
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { signOut } from '@features/auth/auth.slice';
+import { useUser } from '@hooks/useUser';
 
 const Header: FC<unknown> = () => {
-  const user = useAppSelector((state) => state.auth.user);
-  const dispatch = useAppDispatch();
-  const { isDarkMode } = useThemeContext();
+  const { signOut, user } = useUser();
+  const { isDarkMode, setIsDarkMode } = useThemeContext();
+
+  const handleThemeToggle = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      setIsDarkMode((prev) => !prev);
+    },
+    [setIsDarkMode]
+  );
 
   const items = useMemo<MenuProps['items']>(
     () => [
@@ -25,7 +31,7 @@ const Header: FC<unknown> = () => {
       {
         key: '2',
         label: (
-          <div className="theme-switch-wrapper">
+          <div className="theme-switch-wrapper" onClick={handleThemeToggle}>
             <span>Theme</span>
             <ThemeSwitch />
           </div>
@@ -35,10 +41,10 @@ const Header: FC<unknown> = () => {
         key: '3',
         danger: true,
         label: 'Sign out',
-        onClick: () => dispatch(signOut()),
+        onClick: signOut,
       },
     ],
-    [dispatch]
+    [handleThemeToggle, signOut]
   );
 
   return (

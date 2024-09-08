@@ -1,14 +1,14 @@
 import { GoogleOutlined } from '@ant-design/icons';
-import { useAppDispatch, useAppSelector } from '@app/store';
-import { signOut } from '@features/auth/auth.slice';
+import { useAppSelector } from '@app/store';
 import { Button } from 'antd';
 import { FC } from 'react';
+import { useUser } from '@hooks/useUser';
 
 const SignInButton: FC<unknown> = () => {
-  const dispatch = useAppDispatch();
+  const { signOut } = useUser();
   const user = useAppSelector((state) => state.auth.user);
 
-  const onSignIn = () => {
+  const handleSignIn = () => {
     const GOOGLE_AUTHORIZATION_URL =
       'https://accounts.google.com/o/oauth2/v2/auth?' +
       new URLSearchParams({
@@ -25,15 +25,13 @@ const SignInButton: FC<unknown> = () => {
     a.click();
   };
 
-  const onSignOut = () => dispatch(signOut());
-
   return !user ? (
-    <Button onClick={onSignIn}>
+    <Button onClick={handleSignIn}>
       <GoogleOutlined />
       Sign in
     </Button>
   ) : (
-    <Button onClick={onSignOut}>Sign out</Button>
+    <Button onClick={signOut}>Sign out</Button>
   );
 };
 

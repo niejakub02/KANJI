@@ -1,0 +1,81 @@
+.action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+
+  .no-drawing-indicator {
+    text-align: center;
+  }
+
+  .buttons-clip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 0.25rem;
+
+    button {
+      padding: 0 10% !important;
+    }
+  }
+
+  .submission-step,
+  .prediciton-step {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    &__auto-complete {
+      width: 100%;
+
+      input {
+        font-size: 1.25rem;
+      }
+    }
+
+    &__text-area {
+      min-height: 200px;
+      height: 60%;
+      resize: none;
+    }
+  }
+
+  .ant-spin-nested-loading,
+  .ant-spin-container {
+    height: 100%;
+    width: 100%;
+  }
+
+  .light-mode {
+    .ant-steps-item-title {
+      color: var(--ant-color-text-base) !important;
+    }
+
+    .ant-steps-item-tail::after {
+      background-color: var(--ant-color-text-tertiary) !important;
+    }
+
+    .ant-steps-icon-dot {
+      border-color: var(--ant-color-text-tertiary) !important;
+    }
+  }
+}
+
+@media screen and (width < 1024px) {
+  .action-card {
+    .submission-step {
+      &__auto-complete,
+      &__text-area {
+        width: 50%;
+      }
+    }
+  }
+}

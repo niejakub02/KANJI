@@ -1,10 +1,4 @@
-import {
-  useRef,
-  useCallback,
-  forwardRef,
-  useImperativeHandle,
-  useEffect,
-} from 'react';
+import { useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import './Canvas.scss';
 import { createCanvas, drawSolidLine } from '@utils/canvasUtils';
 import { useThemeContext } from '@contexts/Theme.context';

@@ -26,6 +26,10 @@ const lightTheme: Partial<AliasToken> = {
   colorBgLayout: '#D7D9E1',
 };
 
+const darkTheme: Partial<AliasToken> = {
+  colorBgLayout: '#0d0d0d',
+};
+
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(initalState.isDarkMode);
   const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -38,7 +42,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
       theme={{
         cssVar: true,
         algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
-        token: isDarkMode ? undefined : lightTheme,
+        token: isDarkMode ? darkTheme : lightTheme,
       }}
     >
       <themeContext.Provider value={{ isDarkMode, setIsDarkMode, messageApi }}>

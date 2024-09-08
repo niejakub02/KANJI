@@ -1,25 +1,25 @@
 import { usePredictMutation } from '@app/api';
 import './PredicitonTable.scss';
-import { Popover, Spin } from 'antd';
+import { Popover } from 'antd';
 import { useMemo } from 'react';
 
 export const PredicitonTable = () => {
-  const [_, { data: predictions, isLoading }] = usePredictMutation({
+  const [_, { data: predictions }] = usePredictMutation({
     fixedCacheKey: 'shared-prediction',
   });
 
   const formattedPredicitions = useMemo(
     () =>
-      predictions?.map(({ probability, ...rest }) => ({
-        ...rest,
-        probability: (probability * 100).toFixed(3),
-      })),
+      predictions
+        ?.filter((_, i) => i < 8)
+        ?.map(({ probability, ...rest }) => ({
+          ...rest,
+          probability: (probability * 100).toFixed(3),
+        })),
     [predictions]
   );
 
-  return isLoading ? (
-    <Spin />
-  ) : (
+  return (
     <table className="prediction-table">
       <thead>
         <tr>

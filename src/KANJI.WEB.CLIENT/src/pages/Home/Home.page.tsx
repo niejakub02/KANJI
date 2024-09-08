@@ -1,7 +1,7 @@
 import { MainView } from '@components/MainView';
 import { FC } from 'react';
 
-export const HomePage: FC<unknown> = () => {
+export const HomePage: FC = () => {
   return <MainView />;
 };
 

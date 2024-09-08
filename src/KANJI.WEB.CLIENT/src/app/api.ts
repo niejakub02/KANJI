@@ -16,7 +16,7 @@ export const kanjiApi = createApi({
         },
       }),
     }),
-    getUserDetails: builder.query<User, void>({
+    userDetails: builder.query<User, void>({
       query: () => 'auth/user-details',
     }),
     predict: builder.mutation<Prediciton[], number[]>({
@@ -28,11 +28,19 @@ export const kanjiApi = createApi({
         },
       }),
     }),
+
+    // same origin query for asset
+    supportedKanjiList: builder.query<string[], void>({
+      query: () => `${window.location.origin}/model_3_8.json`,
+      transformResponse: (response: Record<number, string>) =>
+        Object.values(response),
+    }),
   }),
 });
 
 export const {
   useSignInGoogleQuery,
-  useGetUserDetailsQuery,
+  useUserDetailsQuery,
   usePredictMutation,
+  useSupportedKanjiListQuery,
 } = kanjiApi;

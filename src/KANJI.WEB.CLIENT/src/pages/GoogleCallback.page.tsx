@@ -2,7 +2,7 @@ import { useSignInGoogleQuery } from '@app/api';
 import { Spin } from 'antd';
 import { FC, useEffect } from 'react';
 
-export const GoogleCallbackPage: FC<unknown> = () => {
+export const GoogleCallbackPage: FC = () => {
   // TODO: redirect if service unavailble or some retry policy
   const code = new URLSearchParams(window.location.search).get('code');
   const { data: tokens, isLoading } = useSignInGoogleQuery(code, {

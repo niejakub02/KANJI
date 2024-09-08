@@ -1,21 +1,27 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import './MainView.scss';
-import { useAppSelector } from './../../app/store';
+import { useAppDispatch, useAppSelector } from './../../app/store';
 import { SignInButton } from '@components/SignInButton';
 import { Header } from '@components/Header';
 import { SideBar } from '@components/SideBar';
-import { DrawingCard } from '@features/drawing/DrawingCard/DrawingCard';
-import { ViewCard } from '@features/global/ViewCard/ViewCard';
-import { SubOne } from './SubOne';
 import { useThemeContext } from '@contexts/Theme.context';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { selectTab } from '@features/global/global.slice';
 
 export const MainView: FC<any> = () => {
   // const { connection, isConnected } = useCommunityContext();
   const user = useAppSelector((state) => state.auth.user);
-  const selectedTab = useAppSelector((state) => state.global.selectedTab);
   const { isDarkMode } = useThemeContext();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  console.log(user);
+  useEffect(() => {
+    if (user && window.location.pathname === '/') {
+      navigate('draw');
+      dispatch(selectTab('draw'));
+    }
+  }, [dispatch, navigate, user]);
+
   return (
     <div>
       {!user ? (
@@ -29,15 +35,7 @@ export const MainView: FC<any> = () => {
               isDarkMode ? 'workarea__content--dark' : ''
             }`}
           >
-            {selectedTab === 'draw' ? (
-              <div className="content-wrapper">
-                <ViewCard className="content-wrapper__top" />
-                <DrawingCard className="content-wrapper__main" />
-                <SubOne />
-              </div>
-            ) : (
-              <h2>hello</h2>
-            )}
+            <Outlet />
           </div>
         </div>
       )}

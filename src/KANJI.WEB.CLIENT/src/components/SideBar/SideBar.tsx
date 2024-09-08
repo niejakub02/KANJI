@@ -6,17 +6,21 @@ import { MenuOutlined } from '@ant-design/icons';
 
 const SideBar: FC<unknown> = () => {
   const sideBarRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const tabsNavigatorRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleOnClick = (e: MouseEvent) => {
-      if (sideBarRef.current && e.target) {
-        if (!sideBarRef.current.contains(e.target as Node)) setIsOpen(false);
+      if (tabsNavigatorRef.current && buttonRef.current && e.target) {
+        if (
+          !tabsNavigatorRef.current.contains(e.target as Node) &&
+          !buttonRef.current.contains(e.target as Node)
+        )
+          setIsOpen(false);
       }
     };
-    setTimeout(() => {
-      window.addEventListener('click', handleOnClick);
-    }, 0);
+    window.addEventListener('click', handleOnClick);
     return () => {
       window.removeEventListener('click', handleOnClick);
     };
@@ -24,7 +28,6 @@ const SideBar: FC<unknown> = () => {
 
   const handleOnOpen = () => setIsOpen(true);
 
-  console.log(isOpen);
   return (
     <>
       <Button
@@ -33,13 +36,14 @@ const SideBar: FC<unknown> = () => {
         shape="circle"
         size="small"
         id="menu-button"
+        ref={buttonRef}
         onClick={handleOnOpen}
       />
       <div
         className={`side-bar ${isOpen ? 'side-bar--open' : ''}`}
         ref={sideBarRef}
       >
-        <TabsNavigator />
+        <TabsNavigator ref={tabsNavigatorRef} />
       </div>
     </>
   );

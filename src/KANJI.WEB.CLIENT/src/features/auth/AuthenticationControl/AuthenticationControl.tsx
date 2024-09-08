@@ -1,17 +1,19 @@
 import { useUserDetailsQuery } from '@app/api';
 import { useAppDispatch } from '@app/store';
 import { useThemeContext } from '@contexts/Theme.context';
-import { signIn, signOut } from '@features/auth/auth.slice';
+import { useUser } from '@hooks/useUser';
 import { isRefreshTokenAvailable } from '@utils/authUtils';
+import { Spin } from 'antd';
 import { useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 
-export const useAuthorization = () => {
+export const AuthenticationControl = () => {
+  const { signIn, signOut, user } = useUser();
   const dispatch = useAppDispatch();
   const {
     data: userDetails,
     isLoading,
     isError,
-    status,
   } = useUserDetailsQuery(undefined, {
     skip: !isRefreshTokenAvailable(),
   });
@@ -20,15 +22,28 @@ export const useAuthorization = () => {
   useEffect(() => {
     if (!isLoading) {
       if (userDetails) {
-        dispatch(signIn(userDetails));
+        signIn(userDetails);
       } else {
         if (isError) {
           messageApi?.warning('Refresh token expired or is invalid.');
         }
-        dispatch(signOut());
+        if (user) {
+          signOut();
+        }
       }
     }
-  }, [userDetails, isLoading, isError, messageApi, status, dispatch]);
+  }, [
+    userDetails,
+    isLoading,
+    isError,
+    messageApi,
+    dispatch,
+    signIn,
+    signOut,
+    user,
+  ]);
 
-  return { userDetails, isLoading };
+  return isLoading ? <Spin /> : <Outlet />;
 };
+
+export default AuthenticationControl;

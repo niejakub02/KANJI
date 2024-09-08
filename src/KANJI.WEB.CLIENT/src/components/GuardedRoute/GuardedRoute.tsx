@@ -1,28 +1,22 @@
-import { useGetUserDetailsQuery } from '@app/api';
-import { useAppDispatch } from '@app/store';
+import { useUserDetailsQuery } from '@app/api';
 import { useThemeContext } from '@contexts/Theme.context';
-import { signOut } from '@features/auth/auth.slice';
 import {
   isAccessTokenAvailable,
   isRefreshTokenAvailable,
 } from '@utils/authUtils';
-import { FC, ReactNode, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { FC, useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useUser } from '@hooks/useUser';
 
-type GuardedRouteProps = {
-  children: ReactNode;
-};
-
-const GuardedRoute: FC<GuardedRouteProps> = ({ children }) => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+const GuardedRoute: FC = () => {
+  const { signOut } = useUser();
   const { messageApi } = useThemeContext();
   const {
     data: userDetails,
     isLoading,
     isError,
     refetch,
-  } = useGetUserDetailsQuery(undefined, {
+  } = useUserDetailsQuery(undefined, {
     // this have to be keep in sync with access token expiration time,
     // so we check user identity, if he doesnt make any actions on
     // the app, but routes over different tabs
@@ -33,8 +27,7 @@ const GuardedRoute: FC<GuardedRouteProps> = ({ children }) => {
     if (!isRefreshTokenAvailable()) {
       // sign out if refresh token not in the storage
       messageApi?.warning('Refresh token expired or is invalid.');
-      dispatch(signOut());
-      navigate('/');
+      signOut();
     }
     if (!isAccessTokenAvailable()) {
       // refetch if access token not in the storage
@@ -43,7 +36,7 @@ const GuardedRoute: FC<GuardedRouteProps> = ({ children }) => {
     if (isError) {
       messageApi?.warning('Refresh token expired or is invalid.');
     }
-  }, [dispatch, navigate, isError, messageApi, refetch]);
+  }, [signOut, isError, messageApi, refetch]);
 
   // TODO: replace with some backdrop loader
   if (isLoading) return <div>loading...</div>;
@@ -51,7 +44,7 @@ const GuardedRoute: FC<GuardedRouteProps> = ({ children }) => {
   // if
   if (!userDetails) return <Navigate to="/" />;
 
-  return children;
+  return <Outlet />;
 };
 
 export default GuardedRoute;
